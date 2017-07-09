@@ -25,7 +25,7 @@ def heuristic(board, gridsize=4, blocksize=2):
             squareY = i // blocksize
             for n in range(blocksize):
                 for m in range(blocksize):
-                    if not (blocksize * squareX + m == j or 2 * squareY + n == i) and board[2 * squareY + n][blocksize * squareX + m] == val:
+                    if not (blocksize * squareX + m == j or blocksize * squareY + n == i) and board[blocksize * squareY + n][blocksize * squareX + m] == val:
                         collisions += 1
     return collisions
 
@@ -73,6 +73,15 @@ def generate_board(original_board, size, fixed):
 
 
 def solver(original_board = [
+        # [0, 0, 8, 2, 0, 0, 0, 0, 1],
+        # [0, 0, 7, 0, 0, 0, 4, 0, 0],
+        # [0, 3, 0, 5, 0, 0, 0, 8, 7],
+        # [0, 0, 5, 4, 0, 1, 8, 0, 0],
+        # [9, 0, 0, 0, 0, 0, 0, 0, 4],
+        # [3, 0, 0, 7, 0, 8, 0, 0, 9],
+        # [0, 9, 0, 6, 0, 0, 0, 1, 8],
+        # [0, 0, 3, 0, 0, 0, 5, 0, 0],
+        # [1, 0, 2, 9, 0, 0, 0, 0, 0]
         [1, 0, 3, 0],
         [0, 0, 0, 0],
         [2, 0, 4, 0],
@@ -94,7 +103,7 @@ def solver(original_board = [
         board = generate_board(original_board, size, fixed_values)
         boards.append(board)
     ## reset boards list to take both heuristics and states
-    boards = [(heuristic(board), board) for board in boards]
+    boards = [(heuristic(board, gridsize=size, blocksize=int(sqrt(size))), board) for board in boards]
 
     while not solved:
         # order by heuristic value of boards
@@ -111,11 +120,13 @@ def solver(original_board = [
             ## generate successor boards
             successors = []
             for board in boards:
+                print "Heuristic score: %d" % board[0]
+                print reduce(lambda accumulator, x: accumulator + "\n" + str(x), board[1], "")
                 for i in range(BRANCHING_FACTOR):
                     successors.append(generate_successor(board[1], size, fixed_values))
             ## add each successor to current list with heuristic value
             for s in successors:
-                boards.append((heuristic(s), s))
+                boards.append((heuristic(s, gridsize=size, blocksize=int(sqrt(size))), s))
 
     return solution
 
