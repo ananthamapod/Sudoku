@@ -9,7 +9,7 @@ The heuristic used is the number of collisions, a check for uniqueness within th
 ### Search Space
 * **S** - The states are sets of filled configurations of the board
 * **S0** - The initial state consists of 10 initial randomized configurations where the cells are randomized around the fixed cells that had already been given values in the original problem.
-* **T** - The transitions are made with value swaps between nonfixed cells. To keep the constraint of unique values within a row (each row must have exactly 1 instance of 1, 2, 3, and 4), random swaps are done within the same row
+* **T** - The transitions are made with value swaps between nonfixed cells. To keep the constraint of unique values within a row (each row must have exactly 1 instance of 1, 2, 3, 4, etc), random swaps are done within the same row
 * **F** - The goal states are states where at least one of the boards in the board set of the state has a heuristic value of 0 (no collisions)
 
 ### Algorithm

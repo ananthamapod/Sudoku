@@ -40,14 +40,11 @@ def deepcopy_board(board):
     return ret
 
 
-def generate_successor(board, fixed):
-    choices = [
-        [1,3],
-        [0,1,2,3],
-        [1,3],
-        [0,1,2,3]
-    ]
-    row = randint(0,3)
+def generate_successor(board, size, fixed):
+    choices = map(lambda x: filter(lambda y: (x[0], y) not in fixed, x[1]),
+        enumerate([list(range(size)) for x in range(size)]))
+
+    row = randint(0,size-1)
     index1 = randint(0, len(choices[row])-1)
     choice1 = choices[row][index1]
     del choices[row][index1]
@@ -61,11 +58,8 @@ def generate_successor(board, fixed):
 
 def generate_board(original_board, size, fixed):
     board = deepcopy_board(original_board)
-    choices = [
-        [2,4],
-        [1,2,3,4],
-        [1,3],
-        [1,2,3,4]
+    choices = [filter(lambda y: y not in x, range(1, size+1))
+        for x in original_board
     ]
 
     for i in range(size):
@@ -118,7 +112,7 @@ def solver(original_board = [
             successors = []
             for board in boards:
                 for i in range(BRANCHING_FACTOR):
-                    successors.append(generate_successor(board[1]))
+                    successors.append(generate_successor(board[1], size, fixed_values))
             ## add each successor to current list with heuristic value
             for s in successors:
                 boards.append((heuristic(s), s))
